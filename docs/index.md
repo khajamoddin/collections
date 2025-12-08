@@ -1,12 +1,18 @@
 ---
-layout: default
-title: Home
-nav_order: 1
+layout: home
+title: Collections
+permalink: /
 ---
 
 # Collections
 
-Generic collections library for Go. See the sections in the sidebar for usage, API, testing, CI, and roadmap.
+Generic collections library for Go.
 
-Start with the [Usage Guide](usage.md) and the [API Reference](api.md).
+- Start with the [Usage Guide](usage.md)
+- Browse the [API Reference](api.md)
+- Check out [Testing](testing.md) and [CI](ci.md)
 
+## Versions
+
+- [Stable v1](/v1/)
+- [Next (vNext)](/vNext/)

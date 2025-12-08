@@ -1,0 +1,21 @@
+:root {
+  --color-accent: #2563eb;
+  --color-link: #1d4ed8;
+}
+
+.site-title {
+  font-weight: 700;
+}
+
+.page-header { border-bottom: 1px solid #e5e7eb; }
+
+html[data-theme='dark'] body { background: #0f172a; color: #e5e7eb; }
+html[data-theme='dark'] a { color: #93c5fd; }
+html[data-theme='dark'] .page__content h1,
+html[data-theme='dark'] .page__content h2,
+html[data-theme='dark'] .page__content h3 { color: #ffffff; }
+html[data-theme='dark'] .masthead,
+html[data-theme='dark'] .page__footer { background: #111827; border-color: #1f2937; }
+html[data-theme='dark'] .sidebar { background: #0b1220; }
+html[data-theme='dark'] .btn,
+html[data-theme='dark'] #theme-toggle { background: #111827; color: #e5e7eb; border-color: #374151; }

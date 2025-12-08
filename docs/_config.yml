@@ -1,19 +1,36 @@
 title: Collections
 description: Generic collections library for Go
-theme: just-the-docs
+remote_theme: mmistakes/minimal-mistakes
+minimal_mistakes_skin: default
 url: https://khajamoddin.github.io/collections
 repository: khajamoddin/collections
 markdown: kramdown
 plugins:
+  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-seo-tag
-nav_order: 1
-aux_links:
-  Go Reference: https://pkg.go.dev/github.com/khajamoddin/collections
-  Source on GitHub: https://github.com/khajamoddin/collections
-just_the_docs:
-  search_enabled: true
-  nav_external_links:
-    - title: Go Report Card
-      url: https://goreportcard.com/report/github.com/khajamoddin/collections
-
+search: true
+logo: /assets/logo.svg
+collections:
+  v1:
+    output: true
+    permalink: /v1/:path/
+  vNext:
+    output: true
+    permalink: /vNext/:path/
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: single
+  - scope:
+      path: "v1"
+      type: "v1"
+    values:
+      layout: single
+  - scope:
+      path: "vNext"
+      type: "vNext"
+    values:
+      layout: single
