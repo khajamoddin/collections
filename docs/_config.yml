@@ -2,7 +2,7 @@ title: Collections
 description: Generic collections library for Go
 remote_theme: mmistakes/minimal-mistakes
 minimal_mistakes_skin: default
-url: https://khajamoddin.github.io/collections
+url: https://khajamoddin.github.io
 baseurl: "/collections"
 repository: khajamoddin/collections
 markdown: kramdown
