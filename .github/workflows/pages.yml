@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v4
+        with:
+          enablement: true
+          static_site_generator: jekyll
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
