@@ -18,5 +18,6 @@ jobs:
         with:
           files: ./coverage.out
           flags: unittests
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
       - run: go build ./...
