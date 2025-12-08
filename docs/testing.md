@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testing & Benchmarks
+nav_order: 5
+---
+
 # Testing & Benchmarks
 
 ## Run Tests

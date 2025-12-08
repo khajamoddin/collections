@@ -1,3 +1,9 @@
+---
+layout: default
+title: Continuous Integration
+nav_order: 6
+---
+
 # Continuous Integration
 
 Workflow: `.github/workflows/go.yml`

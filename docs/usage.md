@@ -1,3 +1,9 @@
+---
+layout: default
+title: Usage Guide
+nav_order: 3
+---
+
 # Usage Guide
 
 ## Import

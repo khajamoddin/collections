@@ -5,9 +5,10 @@ import (
     col "github.com/khajamoddin/collections/collections"
 )
 
-func setExample() {
+func main() {
     s := col.NewSet[int]()
     s.Add(1)
     s.Add(2)
-    fmt.Println(s.Len())
+    fmt.Println("len:", s.Len())
 }
+

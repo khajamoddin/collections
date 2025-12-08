@@ -1,3 +1,9 @@
+---
+layout: default
+title: API Reference
+nav_order: 4
+---
+
 # API Reference
 
 Package: `github.com/khajamoddin/collections/collections`

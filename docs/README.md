@@ -1,3 +1,9 @@
+---
+layout: default
+title: Overview
+nav_order: 2
+---
+
 # Collections Go Library
 
 A small, generic collections library for Go providing `Set[T]`, `Deque[T]`, and `PriorityQueue[T]`. Designed to be simple, zero‑value safe where possible, and idiomatic.

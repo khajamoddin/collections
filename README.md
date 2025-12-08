@@ -1,9 +1,9 @@
 # collections
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/khajamoddin/collections.svg)](https://pkg.go.dev/github.com/khajamoddin/collections) 
+[![Go Reference](https://pkg.go.dev/badge/github.com/khajamoddin/collections.svg)](https://pkg.go.dev/github.com/khajamoddin/collections)
 [![Go Report Card](https://goreportcard.com/badge/github.com/khajamoddin/collections)](https://goreportcard.com/report/github.com/khajamoddin/collections)
-[![Build Status](https://github.com/khajamoddin/collections/actions/workflows/go.yml/badge.svg)](https://github.com/khajamoddin/collections/actions)
-[![Coverage Status](https://codecov.io/gh/khajamoddin/collections/branch/main/graph/badge.svg)](https://codecov.io/gh/khajamoddin/collections)
+[![CI](https://github.com/khajamoddin/collections/actions/workflows/go.yml/badge.svg)](https://github.com/khajamoddin/collections/actions/workflows/go.yml)
+[![codecov](https://codecov.io/gh/khajamoddin/collections/branch/main/graph/badge.svg)](https://codecov.io/gh/khajamoddin/collections)
 
 ---
 
