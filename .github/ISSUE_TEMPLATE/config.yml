@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security Reports
+    url: https://github.com/khajamoddin/collections/security/advisories/new
+    about: Please use private advisories or email khaja@estimatedstocks.com for vulnerabilities.
