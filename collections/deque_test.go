@@ -78,3 +78,31 @@ func TestDequeClearAndSequence(t *testing.T) {
 		t.Fatalf("len after drain")
 	}
 }
+
+func TestDequeCircularBuffer(t *testing.T) {
+	d := NewDequeWithCapacity[int](2)
+	d.PushBack(1)
+	d.PushBack(2)
+	if d.Len() != 2 {
+		t.Fatalf("len should be 2")
+	}
+	if v, _ := d.PopFront(); v != 1 {
+		t.Fatalf("unexpected pop %d", v)
+	}
+	d.PushBack(3) // should wrap
+	d.PushFront(0)
+	if d.Len() != 3 {
+		t.Fatalf("len should be 3 after wrap")
+	}
+	order := []int{}
+	for d.Len() > 0 {
+		v, _ := d.PopFront()
+		order = append(order, v)
+	}
+	expected := []int{0, 2, 3}
+	for i, v := range expected {
+		if order[i] != v {
+			t.Fatalf("order mismatch %v", order)
+		}
+	}
+}

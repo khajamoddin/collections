@@ -28,7 +28,8 @@ This library is designed for clarity, performance, and Go-style minimalism. It f
 
 - **Generic, type-safe collections** leveraging Go 1.18+ generics  
 - Zero-value usability wherever possible  
-- Clean, minimal API following Go conventions  
+- Clean, minimal API following Go conventions (including set algebra helpers)  
+- Ordered iteration via `OrderedMap` and one-to-many with `MultiMap`  
 - Fully tested and benchmarked  
 - Ready for real-world production use
 
@@ -38,3 +39,84 @@ This library is designed for clarity, performance, and Go-style minimalism. It f
 
 ```bash
 go get github.com/khajamoddin/collections
+```
+
+---
+
+## Quick Start
+
+```go
+package main
+
+import (
+	"fmt"
+
+	collections "github.com/khajamoddin/collections/collections"
+)
+
+func main() {
+	// Set with algebra helpers
+	s := collections.NewSet[int]()
+	s.Add(1)
+	s.Add(2)
+	other := collections.NewSet[int]()
+	other.Add(2)
+	other.Add(3)
+	union := s.Union(other) // {1,2,3}
+	fmt.Println(union.Values())
+
+	// Deque (circular buffer)
+	d := collections.NewDeque[string]()
+	d.PushFront("b")
+	d.PushBack("c")
+	d.PushFront("a")
+	v, _ := d.PopFront()
+	fmt.Println("front:", v)
+
+	// OrderedMap preserves insertion order
+	om := collections.NewOrderedMap[string, int]()
+	om.Set("first", 1)
+	om.Set("second", 2)
+	om.Range(func(k string, v int) bool {
+		fmt.Println(k, v)
+		return true
+	})
+
+	// MultiMap stores multiple values per key
+	mm := collections.NewMultiMap[string, int]()
+	mm.Add("id", 1)
+	mm.Add("id", 2)
+	fmt.Println("ids:", mm.Get("id"))
+
+	// PriorityQueue (min-heap)
+	pq := collections.NewPriorityQueue[int](func(a, b int) bool { return a < b })
+	pq.Push(5)
+	pq.Push(1)
+pq.Push(3)
+peek, _ := pq.Peek()
+fmt.Println("top:", peek)
+}
+```
+
+---
+
+## Why collections?
+
+| Feature            | Standard Library            | This Library                           |
+|--------------------|-----------------------------|----------------------------------------|
+| Generic Set        | map[T]struct{} boilerplate  | `Set[T]` with set algebra helpers      |
+| Deque              | Manual slice gymnastics     | `Deque[T]` circular buffer             |
+| Priority Queue     | `container/heap` verbose    | `PriorityQueue[T]` thin wrapper        |
+| Ordered Map        | None                        | `OrderedMap[K,V]` preserves order      |
+| Multi Map          | map[K][]V (DIY)             | `MultiMap[K,V]` with helpers           |
+| Zero-value usable  | Not always                  | Yes, documented                        |
+
+---
+
+## Complexity & Thread Safety (overview)
+
+- `Set[T]`: add/remove/has `O(1)` avg; set algebra clones—`O(n)`; not thread-safe—protect externally for concurrent use.
+- `Deque[T]`: push/pop/peek front/back `O(1)` amortized via circular buffer; not thread-safe.
+- `PriorityQueue[T]`: push/pop `O(log n)`, peek `O(1)`; not thread-safe.
+- `OrderedMap[K,V]`: set/get/delete `O(1)` avg; ordered iteration forward/reverse; not thread-safe.
+- `MultiMap[K,V]`: add `O(1)`, remove first match `O(n)` in value slice, get `O(len(values))`; not thread-safe.

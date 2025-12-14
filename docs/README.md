@@ -53,11 +53,11 @@ func main() {
 
 ## Packages and Types
 
-- `collections.Set[T]`: hash set with add/remove/has/values.
-- `collections.Deque[T]`: double-ended queue backed by slice.
+- `collections.Set[T]`: hash set with add/remove/has/values and set algebra helpers.
+- `collections.Deque[T]`: circular-buffer double-ended queue with O(1) amortized operations.
 - `collections.PriorityQueue[T]`: heap-backed priority queue with caller-provided comparator.
-- `collections.OrderedMap[K,V]`: skeleton for iteration in insertion order (future work).
-- `collections.MultiMap[K,V]`: skeleton for one-to-many mapping (future work).
+- `collections.OrderedMap[K,V]`: insertion-ordered map with forward/reverse iteration.
+- `collections.MultiMap[K,V]`: one-to-many map with helper methods.
 
 ## Examples
 

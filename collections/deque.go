@@ -1,63 +1,119 @@
 package collections
 
 type Deque[T any] struct {
-    data []T
+	buf  []T
+	head int
+	size int
 }
 
 func NewDeque[T any]() *Deque[T] {
-    return &Deque[T]{}
+	return &Deque[T]{}
+}
+
+// NewDequeWithCapacity preallocates space for the requested capacity.
+func NewDequeWithCapacity[T any](capacity int) *Deque[T] {
+	if capacity < 0 {
+		capacity = 0
+	}
+	return &Deque[T]{buf: make([]T, capacity)}
 }
 
 func (d *Deque[T]) Len() int {
-    return len(d.data)
+	if d == nil {
+		return 0
+	}
+	return d.size
 }
 
 func (d *Deque[T]) Clear() {
-    d.data = nil
+	if d == nil {
+		return
+	}
+	d.buf = nil
+	d.head = 0
+	d.size = 0
 }
 
 func (d *Deque[T]) PushBack(v T) {
-    d.data = append(d.data, v)
+	if d == nil {
+		return
+	}
+	d.ensureCapacity(d.size + 1)
+	idx := (d.head + d.size) % cap(d.buf)
+	d.buf[idx] = v
+	d.size++
 }
 
 func (d *Deque[T]) PushFront(v T) {
-    d.data = append([]T{v}, d.data...)
+	if d == nil {
+		return
+	}
+	d.ensureCapacity(d.size + 1)
+	d.head = (d.head - 1 + cap(d.buf)) % cap(d.buf)
+	d.buf[d.head] = v
+	d.size++
 }
 
 func (d *Deque[T]) PeekFront() (T, bool) {
-    var zero T
-    if len(d.data) == 0 {
-        return zero, false
-    }
-    return d.data[0], true
+	var zero T
+	if d == nil || d.size == 0 {
+		return zero, false
+	}
+	return d.buf[d.head], true
 }
 
 func (d *Deque[T]) PeekBack() (T, bool) {
-    var zero T
-    if len(d.data) == 0 {
-        return zero, false
-    }
-    return d.data[len(d.data)-1], true
+	var zero T
+	if d == nil || d.size == 0 {
+		return zero, false
+	}
+	idx := (d.head + d.size - 1) % cap(d.buf)
+	return d.buf[idx], true
 }
 
 func (d *Deque[T]) PopFront() (T, bool) {
-    var zero T
-    if len(d.data) == 0 {
-        return zero, false
-    }
-    v := d.data[0]
-    d.data = d.data[1:]
-    return v, true
+	var zero T
+	if d == nil || d.size == 0 {
+		return zero, false
+	}
+	v := d.buf[d.head]
+	d.head = (d.head + 1) % cap(d.buf)
+	d.size--
+	return v, true
 }
 
 func (d *Deque[T]) PopBack() (T, bool) {
-    var zero T
-    if len(d.data) == 0 {
-        return zero, false
-    }
-    i := len(d.data) - 1
-    v := d.data[i]
-    d.data = d.data[:i]
-    return v, true
+	var zero T
+	if d == nil || d.size == 0 {
+		return zero, false
+	}
+	idx := (d.head + d.size - 1) % cap(d.buf)
+	v := d.buf[idx]
+	d.size--
+	return v, true
 }
 
+func (d *Deque[T]) ensureCapacity(need int) {
+	if need <= cap(d.buf) {
+		return
+	}
+	newCap := cap(d.buf)
+	if newCap == 0 {
+		newCap = 1
+	}
+	for newCap < need {
+		newCap <<= 1
+	}
+	newBuf := make([]T, newCap)
+	if d.size > 0 {
+		if d.head+d.size <= cap(d.buf) {
+			copy(newBuf, d.buf[d.head:d.head+d.size])
+		} else {
+			n := cap(d.buf) - d.head
+			copy(newBuf, d.buf[d.head:])
+			copy(newBuf[n:], d.buf[:d.size-n])
+		}
+	}
+	d.buf = newBuf
+	d.head = 0
+}

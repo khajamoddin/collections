@@ -24,12 +24,19 @@ fmt.Println(s.Len())
 for _, v := range s.Values() {
     fmt.Println(v)
 }
+
+// Set algebra helpers
+other := col.NewSet[int]()
+other.Add(30)
+union := s.Union(other)           // {10,20,30}
+intersection := s.Intersection(s) // {10,20}
+fmt.Println(union.Values(), intersection.Values())
 ```
 
 ## Deque[T]
 
 ```go
-d := col.NewDeque[string]()
+d := col.NewDeque[string]() // uses circular buffer internally
 d.PushBack("x")
 d.PushFront("y")
 front, ok := d.PeekFront()
@@ -38,6 +45,35 @@ _, _ = ok, ok2
 v, _ := d.PopFront()
 _ = v
 d.Clear()
+```
+
+## OrderedMap[K,V]
+
+```go
+om := col.NewOrderedMap[string, int]()
+om.Set("first", 1)
+om.Set("second", 2)
+v, ok := om.Get("first")
+fmt.Println(v, ok)
+om.Range(func(k string, v int) bool {
+    fmt.Println(k, v) // visits in insertion order
+    return true
+})
+keys := om.Keys()   // ["first", "second"]
+vals := om.Values() // [1, 2]
+_ = om.Delete("first")
+```
+
+## MultiMap[K,V]
+
+```go
+mm := col.NewMultiMap[string, int]()
+mm.Add("id", 1)
+mm.Add("id", 2)
+fmt.Println(mm.Get("id")) // [1 2]
+mm.Remove("id", 1)
+mm.RemoveAll("id") // returns removed values
+fmt.Println(mm.Len())
 ```
 
 ## PriorityQueue[T]
