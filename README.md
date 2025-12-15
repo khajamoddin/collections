@@ -149,3 +149,19 @@ These are intentionally minimal but realistic patterns you can adapt in your own
 - `PriorityQueue[T]`: push/pop `O(log n)`, peek `O(1)`; not thread-safe.
 - `OrderedMap[K,V]`: set/get/delete `O(1)` avg; ordered iteration forward/reverse; not thread-safe.
 - `MultiMap[K,V]`: add `O(1)`, remove first match `O(n)` in value slice, get `O(len(values))`; not thread-safe.
+
+### Concurrent collections
+
+The `collections/concurrent` subpackage provides concurrency-safe variants of common patterns.  
+They trade a bit of overhead for simpler, correct use from multiple goroutines.
+
+| Type                                   | Thread safety                                      | Typical operations                            | Complexity (per op)                                                         | Notes                                                                 |
+|----------------------------------------|----------------------------------------------------|-----------------------------------------------|----------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| `concurrent.Set[T]`                    | Safe for concurrent use (internal RWMutex)        | `Add`, `Remove`, `Has`, `Len`, `Values`, `All`| `Add`/`Remove`/`Has` → O(1) avg; `Len` → O(1); `Values`/`All` → O(n) snapshot | Wraps `collections.Set[T]`; `Values`/`All` operate on a snapshot to avoid holding locks during iteration. |
+| `concurrent.ShardedMap[K,V]`           | Safe for concurrent use (per-shard RWMutex)       | `Set`, `Get`, `Delete`, `Len`, `Range`, `All` | `Set`/`Get`/`Delete` → O(1) avg; `Len` → O(S + n) where S = shard count; `Range`/`All` → O(n) | Hash-based sharding reduces contention under mixed read/write workloads; iteration order is undefined. |
+
+**Notes**
+
+- All concurrent types are designed for **many readers and writers** in typical backend workloads.
+- For read-mostly maps, using more shards (e.g. 32–128) can reduce lock contention further.
+- For latency-sensitive paths, you should still **profile** and tune shard counts or use workload-specific designs.

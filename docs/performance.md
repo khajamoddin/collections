@@ -37,3 +37,18 @@ BenchmarkSetAdd-8               10909752               135.6 ns/op
 
 - **Deque** is extremely fast (9ns/op) because it avoids allocation once the buffer is grown, and mainly involves pointer arithmetic.
 - **Set** is comparable to standard Go map insertions (~135ns/op). The wrapper overhead is negligible.
+
+### Concurrent collections
+
+Benchmarks (Apple M2, 8 cores, 32 shards for ShardedMap):
+
+| Benchmark                                | ns/op | B/op | allocs/op |
+|------------------------------------------|-------|------|-----------|
+| `BenchmarkConcurrentSet_Add`             | 291   | 8    | 0         |
+| `BenchmarkMapSet_Add` (Baseline)         | 365   | 7    | 0         |
+| `BenchmarkShardedMap_SetGet_StringKeys`  | 262   | 33   | 2         |
+| `BenchmarkLockedMap_SetGet_StringKeys`   | 659   | 33   | 2         |
+
+**Analysis**:
+- `ShardedMap` is **~2.5x faster** than a global lock map (`LockedMap`) under high contention (`SetGet` mixed workload).
+- `ConcurrentSet` adds minimal overhead vs a raw mutex-protected map, while offering a richer API.
