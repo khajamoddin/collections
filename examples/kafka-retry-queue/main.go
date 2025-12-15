@@ -67,8 +67,13 @@ func main() {
 			}
 
 			// 2) Consume new messages (simulated here if no Kafka)
-			_ = reader.SetReadDeadline(time.Now().Add(10 * time.Millisecond))
+			// Note: kafka.Reader.ReadMessage blocks until a message is received or context is cancelled.
+			// For this example, we use a separate goroutine or short timeout context if we wanted non-blocking.
+			// However, in this simple loop, ReadMessage will block the ticker.
+			// To make it pseudo-non-blocking for the demo loop:
+			ctx, cancel := context.WithTimeout(ctx, 10*time.Millisecond)
 			msg, err := reader.ReadMessage(ctx)
+			cancel()
 			if err == nil {
 				ready.PushBack(retryMessage{
 					Msg:         msg,

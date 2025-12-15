@@ -34,12 +34,11 @@ func main() {
 	// 2) Simulate a few new sessions we observed in this process
 	newSessions := []string{"sess-101", "sess-102", "sess-103"}
 	for _, id := range newSessions {
-		if active.Add(id) {
-			if err := rdb.SAdd(ctx, key, id).Err(); err != nil {
-				log.Printf("redis SADD failed: %v", err)
-			}
-			log.Printf("Added new session %s", id)
+		active.Add(id)
+		if err := rdb.SAdd(ctx, key, id).Err(); err != nil {
+			log.Printf("redis SADD failed: %v", err)
 		}
+		log.Printf("Added new session %s", id)
 	}
 
 	// 3) Simulate sessions that timed out locally and need removal
