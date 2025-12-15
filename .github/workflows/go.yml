@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
@@ -14,7 +16,7 @@ jobs:
       - name: Run tests with coverage profile
         run: go test ./... -v -cover -coverprofile=coverage.out
       - name: Upload coverage to Codecov
-        if: ${{ secrets.CODECOV_TOKEN != '' }}
+        if: env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage.out
@@ -22,7 +24,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
       - name: Skip Codecov (token not set)
-        if: ${{ secrets.CODECOV_TOKEN == '' }}
+        if: env.CODECOV_TOKEN == ''
         run: |
           echo "CODECOV_TOKEN is not set; skipping upload."
       - run: go build ./...
