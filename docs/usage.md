@@ -101,3 +101,8 @@ for pq.Len() > 0 {
 - `examples/set/main.go`
 - `examples/deque/main.go`
 - `examples/iter/iter_example.go` (shows new Go 1.23 iterators)
+
+See also the **[Integration Examples](../README.md#integration-examples)**:
+- [Redis Session Index](../examples/redis-session-index/main.go)
+- [Kafka Retry Queue](../examples/kafka-retry-queue/main.go)
+- [K8s Config Cache](../examples/k8s-config-cache/main.go)

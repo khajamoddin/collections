@@ -117,6 +117,18 @@ fmt.Println("top:", peek)
 
 ---
 
+## 🔌 Integration examples
+
+Real-world usage examples live under [`examples/`](./examples):
+
+- `redis-session-index/` – Track active user sessions per region using `Set`.
+- `kafka-retry-queue/` – Retry scheduler using `Deque` + `PriorityQueue`.
+- `k8s-config-cache/` – In-memory cache for Kubernetes `ConfigMap`s using `OrderedMap` + `MultiMap`.
+
+These are intentionally minimal but realistic patterns you can adapt in your own services.
+
+---
+
 ## Why collections?
 
 | Feature            | Standard Library            | This Library                           |
