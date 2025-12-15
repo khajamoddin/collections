@@ -16,6 +16,7 @@ Package: `github.com/khajamoddin/collections/collections`
 - `(*Set[T]) Has(v T) bool`
 - `(*Set[T]) Len() int`
 - `(*Set[T]) Clear()`
+- `(*Set[T]) All() iter.Seq[T]`
 - `(*Set[T]) Values() []T`
 
 Notes:
@@ -31,6 +32,8 @@ Notes:
 - `(*Deque[T]) PeekFront() (T, bool)`
 - `(*Deque[T]) PeekBack() (T, bool)`
 - `(*Deque[T]) Len() int`
+- `(*Deque[T]) All() iter.Seq[T]`
+- `(*Deque[T]) Backward() iter.Seq[T]`
 - `(*Deque[T]) Clear()`
 
 Notes:
@@ -43,13 +46,24 @@ Notes:
 - `(*PriorityQueue[T]) Pop() (T, bool)`
 - `(*PriorityQueue[T]) Peek() (T, bool)`
 - `(*PriorityQueue[T]) Len() int`
+- `(*PriorityQueue[T]) All() iter.Seq[T]`
 - `(*PriorityQueue[T]) Clear()`
 
 Notes:
 - Uses `container/heap` internally.
 - Behavior (min/max) depends on the `less` comparator.
 
-## Future Types
+## OrderedMap[K,V]
 
-- `OrderedMap[K,V]`: maintain insertion order, iterate deterministically.
-- `MultiMap[K,V]`: map keys to multiple values efficiently.
+- `NewOrderedMap[K,V]() *OrderedMap[K,V]`
+- `(*OrderedMap[K,V]) Set(k K, v V)`
+- `(*OrderedMap[K,V]) Get(k K) (V, bool)`
+- `(*OrderedMap[K,V]) Delete(k K) bool`
+- `(*OrderedMap[K,V]) All() iter.Seq2[K,V]`
+- `(*OrderedMap[K,V]) Backward() iter.Seq2[K,V]`
+
+## MultiMap[K,V]
+- `NewMultiMap[K,V]() *MultiMap[K,V]`
+- `(*MultiMap[K,V]) Add(k K, v V)`
+- `(*MultiMap[K,V]) Get(k K) []V`
+- `(*MultiMap[K,V]) All() iter.Seq2[K,V]`

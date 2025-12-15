@@ -1,5 +1,7 @@
 package collections
 
+import "iter"
+
 type MultiMap[K comparable, V comparable] struct {
 	m    map[K][]V
 	size int
@@ -116,6 +118,22 @@ func (mm *MultiMap[K, V]) Len() int {
 		return 0
 	}
 	return mm.size
+}
+
+// All returns an iterator over key-value pairs.
+func (mm *MultiMap[K, V]) All() iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		if mm == nil || mm.m == nil {
+			return
+		}
+		for k, values := range mm.m {
+			for _, v := range values {
+				if !yield(k, v) {
+					return
+				}
+			}
+		}
+	}
 }
 
 func (mm *MultiMap[K, V]) Clear() {

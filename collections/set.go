@@ -1,5 +1,7 @@
 package collections
 
+import "iter"
+
 type Set[T comparable] struct {
 	m map[T]struct{}
 }
@@ -61,6 +63,20 @@ func (s *Set[T]) Clear() {
 		return
 	}
 	s.m = make(map[T]struct{})
+}
+
+// All returns an iterator over the elements in the set.
+func (s *Set[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		if s == nil || s.m == nil {
+			return
+		}
+		for k := range s.m {
+			if !yield(k) {
+				return
+			}
+		}
+	}
 }
 
 func (s *Set[T]) Values() []T {

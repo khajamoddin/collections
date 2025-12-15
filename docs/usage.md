@@ -21,7 +21,7 @@ s.Add(20)
 _ = s.Has(10)
 s.Remove(20)
 fmt.Println(s.Len())
-for _, v := range s.Values() {
+for v := range s.All() {
     fmt.Println(v)
 }
 
@@ -59,6 +59,11 @@ om.Range(func(k string, v int) bool {
     fmt.Println(k, v) // visits in insertion order
     return true
 })
+
+// Or use Go 1.23 iterator
+for k, v := range om.All() {
+    fmt.Println(k, v)
+}
 keys := om.Keys()   // ["first", "second"]
 vals := om.Values() // [1, 2]
 _ = om.Delete("first")
@@ -93,5 +98,6 @@ for pq.Len() > 0 {
 
 ## Examples Folder
 
-- `examples/set_example.go` is runnable.
-- `examples/deque_example.go` contains `dequeExample()` to demonstrate operations.
+- `examples/set/main.go`
+- `examples/deque/main.go`
+- `examples/iter/iter_example.go` (shows new Go 1.23 iterators)

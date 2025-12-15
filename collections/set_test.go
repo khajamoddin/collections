@@ -114,11 +114,34 @@ func TestSetNilSafety(t *testing.T) {
 		t.Fatalf("nil set should behave empty")
 	}
 	s.Add(1) // should not panic
-	if s != nil {
-		t.Fatalf("nil set should remain nil after Add")
-	}
 	clone := s.Clone()
 	if clone.Len() != 0 {
 		t.Fatalf("clone of nil should be empty")
+	}
+}
+
+func FuzzSet(f *testing.F) {
+	f.Add([]byte{1, 2, 3})
+	f.Fuzz(func(t *testing.T, data []byte) {
+		s := NewSet[byte]()
+		for _, b := range data {
+			s.Add(b)
+		}
+		if s.Len() > len(data) {
+			t.Errorf("len > data len")
+		}
+	})
+}
+
+func TestSetIterator(t *testing.T) {
+	s := NewSet[int]()
+	s.Add(1)
+	s.Add(2)
+	count := 0
+	for range s.All() {
+		count++
+	}
+	if count != 2 {
+		t.Errorf("got %d want 2", count)
 	}
 }

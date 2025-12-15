@@ -1,5 +1,7 @@
 package collections
 
+import "iter"
+
 type OrderedMap[K comparable, V any] struct {
 	nodes  map[K]*orderedNode[K, V]
 	head   *orderedNode[K, V]
@@ -136,6 +138,34 @@ func (m *OrderedMap[K, V]) RangeReverse(fn func(K, V) bool) {
 	for n := m.tail; n != nil; n = n.prev {
 		if !fn(n.key, n.value) {
 			return
+		}
+	}
+}
+
+// All returns an iterator over key-value pairs in insertion order.
+func (m *OrderedMap[K, V]) All() iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		if m == nil {
+			return
+		}
+		for n := m.head; n != nil; n = n.next {
+			if !yield(n.key, n.value) {
+				return
+			}
+		}
+	}
+}
+
+// Backward returns an iterator over key-value pairs in reverse insertion order.
+func (m *OrderedMap[K, V]) Backward() iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		if m == nil {
+			return
+		}
+		for n := m.tail; n != nil; n = n.prev {
+			if !yield(n.key, n.value) {
+				return
+			}
 		}
 	}
 }

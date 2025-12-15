@@ -106,3 +106,47 @@ func TestDequeCircularBuffer(t *testing.T) {
 		}
 	}
 }
+
+func TestDequeIterator(t *testing.T) {
+	d := NewDeque[int]()
+	d.PushBack(1)
+	d.PushBack(2)
+	d.PushBack(3)
+
+	i := 1
+	for v := range d.All() {
+		if v != i {
+			t.Fatalf("iterator got %d want %d", v, i)
+		}
+		i++
+	}
+}
+
+func BenchmarkDequePushPop(b *testing.B) {
+	d := NewDeque[int]()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		d.PushBack(i)
+		d.PopFront()
+	}
+}
+
+func FuzzDeque(f *testing.F) {
+	f.Add([]byte("pushback"))
+	f.Fuzz(func(t *testing.T, data []byte) {
+		d := NewDeque[byte]()
+		for _, b := range data {
+			if b%2 == 0 {
+				d.PushBack(b)
+			} else {
+				d.PushFront(b)
+			}
+		}
+		if d.Len() > len(data) {
+			t.Errorf("len too big")
+		}
+		for d.Len() > 0 {
+			d.PopFront()
+		}
+	})
+}

@@ -1,16 +1,21 @@
 package collections
 
+import "iter"
+
+// Deque is a generic double-ended queue implemented as a ring buffer.
+// It supports O(1) amortized push and pop operations at both ends.
 type Deque[T any] struct {
 	buf  []T
 	head int
 	size int
 }
 
+// NewDeque creates a new empty Deque.
 func NewDeque[T any]() *Deque[T] {
 	return &Deque[T]{}
 }
 
-// NewDequeWithCapacity preallocates space for the requested capacity.
+// NewDequeWithCapacity creates a new Deque with preallocated capacity.
 func NewDequeWithCapacity[T any](capacity int) *Deque[T] {
 	if capacity < 0 {
 		capacity = 0
@@ -18,6 +23,8 @@ func NewDequeWithCapacity[T any](capacity int) *Deque[T] {
 	return &Deque[T]{buf: make([]T, capacity)}
 }
 
+// Len returns the number of elements in the Deque.
+// Complexity: O(1).
 func (d *Deque[T]) Len() int {
 	if d == nil {
 		return 0
@@ -91,6 +98,36 @@ func (d *Deque[T]) PopBack() (T, bool) {
 	v := d.buf[idx]
 	d.size--
 	return v, true
+}
+
+// All returns an iterator over elements from front to back.
+func (d *Deque[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		if d == nil || d.size == 0 {
+			return
+		}
+		for i := 0; i < d.size; i++ {
+			idx := (d.head + i) % cap(d.buf)
+			if !yield(d.buf[idx]) {
+				return
+			}
+		}
+	}
+}
+
+// Backward returns an iterator over elements from back to front.
+func (d *Deque[T]) Backward() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		if d == nil || d.size == 0 {
+			return
+		}
+		for i := d.size - 1; i >= 0; i-- {
+			idx := (d.head + i) % cap(d.buf)
+			if !yield(d.buf[idx]) {
+				return
+			}
+		}
+	}
 }
 
 func (d *Deque[T]) ensureCapacity(need int) {

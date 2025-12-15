@@ -37,6 +37,9 @@ This library is designed for clarity, performance, and Go-style minimalism. It f
 
 ## Installation
 
+### Prerequisites
+- Go 1.23 or later (required for iterators)
+
 ```bash
 go get github.com/khajamoddin/collections
 ```
@@ -65,6 +68,11 @@ func main() {
 	union := s.Union(other) // {1,2,3}
 	fmt.Println(union.Values())
 
+	// Iterator support (Go 1.23+)
+	for v := range s.All() {
+		fmt.Println(v)
+	}
+
 	// Deque (circular buffer)
 	d := collections.NewDeque[string]()
 	d.PushFront("b")
@@ -77,16 +85,25 @@ func main() {
 	om := collections.NewOrderedMap[string, int]()
 	om.Set("first", 1)
 	om.Set("second", 2)
+	// Classic Range with closure
 	om.Range(func(k string, v int) bool {
 		fmt.Println(k, v)
 		return true
 	})
+	// Modern Range loop
+	for k, v := range om.All() {
+		fmt.Println(k, v)
+	}
 
 	// MultiMap stores multiple values per key
 	mm := collections.NewMultiMap[string, int]()
 	mm.Add("id", 1)
 	mm.Add("id", 2)
 	fmt.Println("ids:", mm.Get("id"))
+	// Iterator
+	for k, v := range mm.All() {
+		fmt.Println(k, v)
+	}
 
 	// PriorityQueue (min-heap)
 	pq := collections.NewPriorityQueue[int](func(a, b int) bool { return a < b })

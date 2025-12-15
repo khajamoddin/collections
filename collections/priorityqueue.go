@@ -1,6 +1,9 @@
 package collections
 
-import "container/heap"
+import (
+	"container/heap"
+	"iter"
+)
 
 type PriorityQueue[T any] struct {
 	h *pqHeap[T]
@@ -33,6 +36,21 @@ func (q *PriorityQueue[T]) Len() int {
 		return 0
 	}
 	return q.h.Len()
+}
+
+// All returns an iterator over the elements in the priority queue.
+// Note: The order is not guaranteed to be sorted (it iterates the underlying heap slice).
+func (q *PriorityQueue[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
+		if q == nil || q.h == nil {
+			return
+		}
+		for _, v := range q.h.data {
+			if !yield(v) {
+				return
+			}
+		}
+	}
 }
 
 func (q *PriorityQueue[T]) Push(v T) {
