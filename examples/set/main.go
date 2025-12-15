@@ -1,14 +1,13 @@
 package main
 
 import (
-    "fmt"
-    col "github.com/khajamoddin/collections/collections"
+	"fmt"
+	col "github.com/khajamoddin/collections/collections"
 )
 
 func main() {
-    s := col.NewSet[int]()
-    s.Add(1)
-    s.Add(2)
-    fmt.Println("len:", s.Len())
+	s := col.NewSet[int]()
+	s.Add(1)
+	s.Add(2)
+	fmt.Println("len:", s.Len())
 }
-
