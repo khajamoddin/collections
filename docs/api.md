@@ -18,6 +18,7 @@ Package: `github.com/khajamoddin/collections/collections`
 - `(*Set[T]) Clear()`
 - `(*Set[T]) All() iter.Seq[T]`
 - `(*Set[T]) Values() []T`
+- `(*Set[T]) ToSlice() []T`
 
 Notes:
 - Safe on zero values; internal map is lazily initialized.
@@ -34,6 +35,7 @@ Notes:
 - `(*Deque[T]) Len() int`
 - `(*Deque[T]) All() iter.Seq[T]`
 - `(*Deque[T]) Backward() iter.Seq[T]`
+- `(*Deque[T]) ToSlice() []T`
 - `(*Deque[T]) Clear()`
 
 Notes:
@@ -61,9 +63,17 @@ Notes:
 - `(*OrderedMap[K,V]) Delete(k K) bool`
 - `(*OrderedMap[K,V]) All() iter.Seq2[K,V]`
 - `(*OrderedMap[K,V]) Backward() iter.Seq2[K,V]`
+- `(*OrderedMap[K,V]) KeysSlice() []K`
+- `(*OrderedMap[K,V]) ValuesSlice() []V`
 
 ## MultiMap[K,V]
 - `NewMultiMap[K,V]() *MultiMap[K,V]`
 - `(*MultiMap[K,V]) Add(k K, v V)`
 - `(*MultiMap[K,V]) Get(k K) []V`
 - `(*MultiMap[K,V]) All() iter.Seq2[K,V]`
+
+## Iterator Helpers (`collections/itertools`)
+- `Map[T, U](seq iter.Seq[T], transform func(T) U) iter.Seq[U]`
+- `Filter[T](seq iter.Seq[T], pred func(T) bool) iter.Seq[T]`
+- `Reduce[T, Acc](seq iter.Seq[T], initial Acc, reducer func(Acc, T) Acc) Acc`
+- `ToSlice[T](seq iter.Seq[T]) []T`

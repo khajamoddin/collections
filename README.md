@@ -18,7 +18,7 @@ It provides high-frequency data structures such as:
 - `OrderedMap[K,V]`
 - `MultiMap[K,V]`
 
-…and utilities for slices, maps, and iterators.  
+…and utilities for slices, maps, iterators (`collections/itertools`).  
 
 This library is designed for clarity, performance, and Go-style minimalism. It fills a gap in the Go ecosystem by providing **well-tested, reusable generic data structures**.
 
