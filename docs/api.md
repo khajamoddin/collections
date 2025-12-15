@@ -11,6 +11,7 @@ Package: `github.com/khajamoddin/collections/collections`
 ## Set[T]
 
 - `NewSet[T]() *Set[T]`
+- `NewSetFromSlice[T]([]T) *Set[T]`
 - `(*Set[T]) Add(v T)`
 - `(*Set[T]) Remove(v T)`
 - `(*Set[T]) Has(v T) bool`
@@ -26,6 +27,7 @@ Notes:
 ## Deque[T]
 
 - `NewDeque[T]() *Deque[T]`
+- `NewDequeFromSlice[T]([]T) *Deque[T]`
 - `(*Deque[T]) PushBack(v T)`
 - `(*Deque[T]) PushFront(v T)`
 - `(*Deque[T]) PopFront() (T, bool)`
@@ -65,6 +67,8 @@ Notes:
 - `(*OrderedMap[K,V]) Backward() iter.Seq2[K,V]`
 - `(*OrderedMap[K,V]) KeysSlice() []K`
 - `(*OrderedMap[K,V]) ValuesSlice() []V`
+- `(*OrderedMap[K,V]) MarshalJSON() ([]byte, error)`
+- `(*OrderedMap[K,V]) UnmarshalJSON(data []byte) error`
 
 ## MultiMap[K,V]
 - `NewMultiMap[K,V]() *MultiMap[K,V]`
