@@ -103,6 +103,25 @@ for pq.Len() > 0 {
 - `examples/iter/iter_example.go` (shows new Go 1.23 iterators)
 
 See also the **[Integration Examples](../README.md#integration-examples)**:
-- [Redis Session Index](../examples/redis-session-index/main.go)
-- [Kafka Retry Queue](../examples/kafka-retry-queue/main.go)
-- [K8s Config Cache](../examples/k8s-config-cache/main.go)
+
+## 🍳 Integration Recipes
+
+These examples show how to solve common system design challenges.
+
+### [Redis Session Index](../examples/redis-session-index/main.go)
+**Pattern**: State Synchronization  
+**Use Case**: Index active users by region in Redis, but maintain a local cache for processing.
+**Integration**: `collections.Set` (local view) ↔ `Redis SET` (remote view).
+**Key Op**: `active.Intersect(expired)` efficiently finds sessions to evict.
+
+### [Kafka Retry Queue](../examples/kafka-retry-queue/main.go)
+**Pattern**: Delay/Retry Loops  
+**Use Case**: Consume events, process them, and if they fail, schedule a retry with exponential backoff.
+**Integration**: `Deque` (immediate work) + `PriorityQueue` (scheduled future work).
+**Key Op**: `PriorityQueue` ensures the next-due retry is always processed immediately when its time comes.
+
+### [K8s Config Cache](../examples/k8s-config-cache/main.go)
+**Pattern**: In-Memory Indexer  
+**Use Case**: Watch Kubernetes resources and cache them for fast lookups by name AND by label.
+**Integration**: `OrderedMap` (primary storage) + `MultiMap` (secondary index).
+**Key Op**: `MultiMap` maps `app=frontend` -> `[config-a, config-b]`, enabling O(1) group lookups.
