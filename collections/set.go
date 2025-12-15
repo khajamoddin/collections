@@ -6,8 +6,24 @@ type Set[T comparable] struct {
 	m map[T]struct{}
 }
 
+// NewSet creates a new empty Set.
 func NewSet[T comparable]() *Set[T] {
 	return &Set[T]{m: make(map[T]struct{})}
+}
+
+// NewSetFromSlice creates a new Set containing the elements of the slice.
+func NewSetFromSlice[T comparable](s []T) *Set[T] {
+	set := NewSetWithCapacity[T](len(s))
+	for _, v := range s {
+		set.Add(v)
+	}
+	return set
+}
+
+// ToSlice returns a slice containing the elements of the Set.
+// The order of elements is undefined.
+func (s *Set[T]) ToSlice() []T {
+	return s.Values()
 }
 
 // NewSetWithCapacity creates a set with space preallocated for the given

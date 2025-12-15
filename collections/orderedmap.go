@@ -1,6 +1,9 @@
 package collections
 
-import "iter"
+import (
+	"encoding/json"
+	"iter"
+)
 
 type OrderedMap[K comparable, V any] struct {
 	nodes  map[K]*orderedNode[K, V]
@@ -177,6 +180,16 @@ func (m *OrderedMap[K, V]) Len() int {
 	return m.length
 }
 
+// KeysSlice returns a slice of keys in insertion order.
+func (m *OrderedMap[K, V]) KeysSlice() []K {
+	return m.Keys()
+}
+
+// ValuesSlice returns a slice of values in insertion order.
+func (m *OrderedMap[K, V]) ValuesSlice() []V {
+	return m.Values()
+}
+
 func (m *OrderedMap[K, V]) Clear() {
 	if m == nil || m.nodes == nil {
 		return
@@ -185,4 +198,96 @@ func (m *OrderedMap[K, V]) Clear() {
 	m.head = nil
 	m.tail = nil
 	m.length = 0
+}
+
+// MarshalJSON implements the json.Marshaler interface.
+// It serializes the OrderedMap as a JSON object, preserving the insertion order
+// (though standard JSON parsers may not respect it).
+func (m *OrderedMap[K, V]) MarshalJSON() ([]byte, error) {
+	if m == nil {
+		return []byte("null"), nil
+	}
+	// We build the object manually to control order.
+	// Note: This assumes keys are simple strings or can be stringified.
+	// For complex keys, standard Go map behaviors apply.
+	// For simplicity in this generic implementation, we use a map if keys are strings,
+	// but standard library usually iterates maps randomly.
+	// To strictly preserve order in output, we must construct the byte slice or use a struct?
+	// Actually, Go's json.Marshal sorts map keys.
+	// To preserve order, we must output as a JSON object { "k1": v1, "k2": v2 } manually
+	// OR output as a list of pairs [ {"Key": k1, "Value": v1}, ... ].
+	//
+	// Most "Ordered Map" implementations in other langs serialize as an object.
+	// Let's implement a manual write to ensure order in the byte stream.
+
+	var buf []byte
+	buf = append(buf, '{')
+	i := 0
+	for k, v := range m.All() {
+		if i > 0 {
+			buf = append(buf, ',')
+		}
+		// Marshal Key
+		keyBytes, err := json.Marshal(k)
+		if err != nil {
+			return nil, err
+		}
+		// If key was not a string, we might need to conform to JSON object key rules (must be string).
+		// json.Marshal will quote strings. If K is int, it outputs number. JSON keys MUST be strings.
+		// Detailed generic handling is complex.
+		// Fallback: We'll create a temporary map to check how json.Marshal handles K.
+		// Better approach for standard lib quality:
+		// Just treat it as an object {k:v}. Clients rely on their parser to keep order.
+		// We iterate in order, so we emit in order.
+
+		// Note: Simply calling json.Marshal on the map field would lose order.
+
+		// Tricky: K might be int. JSON object keys must be strings.
+		// Go's json package handles map[int]T by converting int to string.
+		// We replicate that check? Or just delegate to json.Marshal for the key.
+		// Let's assume K is string-compatible or user accepts valid JSON key rules.
+
+		// If K is not string, we strip quotes? No, JSON keys must be quoted strings.
+		// We will marshal the key, then ensure it is a string.
+
+		if len(keyBytes) > 0 && keyBytes[0] != '"' {
+			// Convert non-string key to string for JSON validity
+			// e.g. 123 -> "123"
+			keyBytes = []byte("\"" + string(keyBytes) + "\"")
+		}
+
+		buf = append(buf, keyBytes...)
+		buf = append(buf, ':')
+		valBytes, err := json.Marshal(v)
+		if err != nil {
+			return nil, err
+		}
+		buf = append(buf, valBytes...)
+		i++
+	}
+	buf = append(buf, '}')
+	return buf, nil
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface.
+func (m *OrderedMap[K, V]) UnmarshalJSON(data []byte) error {
+	// Unmarshaling into an ordered structure is difficult because json.Unmarshal
+	// into a map[K]V loses order before we see it.
+	// We would need a custom decoder.
+	// For now, we fallback to standard map unmarshal, effectively losing order from input.
+	// This is a known limitation unless we write a full parser.
+	// We will populate the map, order will be random (or specific to Go's map iteration).
+
+	// To support keeping order from JSON, we'd need to parse the token stream.
+	// For V1, let's just support loading data.
+
+	tmp := make(map[K]V)
+	if err := json.Unmarshal(data, &tmp); err != nil {
+		return err
+	}
+	m.Clear()
+	for k, v := range tmp {
+		m.Set(k, v)
+	}
+	return nil
 }

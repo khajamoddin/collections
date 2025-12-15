@@ -15,6 +15,27 @@ func NewDeque[T any]() *Deque[T] {
 	return &Deque[T]{}
 }
 
+// NewDequeFromSlice creates a new Deque containing the elements of the slice.
+func NewDequeFromSlice[T any](s []T) *Deque[T] {
+	d := NewDequeWithCapacity[T](len(s))
+	for _, v := range s {
+		d.PushBack(v)
+	}
+	return d
+}
+
+// ToSlice returns a slice containing the elements of the Deque from front to back.
+func (d *Deque[T]) ToSlice() []T {
+	if d == nil || d.size == 0 {
+		return nil
+	}
+	res := make([]T, d.size)
+	for i := 0; i < d.size; i++ {
+		res[i] = d.buf[(d.head+i)%cap(d.buf)]
+	}
+	return res
+}
+
 // NewDequeWithCapacity creates a new Deque with preallocated capacity.
 func NewDequeWithCapacity[T any](capacity int) *Deque[T] {
 	if capacity < 0 {
